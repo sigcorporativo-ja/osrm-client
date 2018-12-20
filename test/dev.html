@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="mapea" content="yes">
+    <title>PLUGIN TEST</title>
+
+    <!-- styles -->
+    <link href="http://mapea4-sigc.juntadeandalucia.es/assets/css/mapea.ol.min.css" rel="stylesheet" />
+    <style rel="stylesheet">
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+    </style>
+
+
+  </head>
+
+  <body>
+    <!-- container -->
+    <div id="mapjs" class="container"></div>
+
+    <!-- libraries -->
+    <!-- <script type="text/javascript" src="http://mapea4-sigc.juntadeandalucia.es/vendor/browser-polyfill.js"></script> -->
+    <script type="text/javascript" src="https://sigc.desarrollo.guadaltel.es/mapea5/js/mapea.ol.min.js"></script>
+
+    <!-- configuration -->
+    <script type="text/javascript" src="https://sigc.desarrollo.guadaltel.es/mapea5/js/configuration.js"></script>
+    <!--  JS plugin here -->
+    <script type="text/javascript" src="http://localhost:6123/osrmclient.ol.js"></script>
+
+
+    <script type="application/javascript">
+      var mapjs = M.map({
+        container: 'mapjs',
+        controls: ['mouse']
+      });
+      let point1 = [252705.6681, 4119326.6565];
+      let point2 = [235511.9196, 4138906.7020];
+      let points = [point1, point2];
+
+
+      M.proxy(false);
+      const osrmclient = new M.plugin.OSRMClient();
+
+      mapjs.addPlugin(osrmclient);
+
+      window.mapjs = mapjs;
+
+      let coords = [];
+      const drawLayer = mapjs.getLayers().find(l => l.name === "__draw__");
+
+
+      mapjs.on(M.evt.CLICK, (coord) => {
+        if (coords.length < 1) {
+          coords.push(coord.coord);
+        } else {
+          coords.push(coord.coord);
+          mapjs.calculateRouteOsrm(coords).then(response => {
+            const route = new M.Feature("route", {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "LineString",
+                coordinates: response.routeDecodified
+              }
+            });
+            console.log(route);
+            drawLayer.addFeatures([route]);
+            drawLayer.setStyle(new M.style.Line({
+              fill: {
+                color: 'red'
+              }
+            }))
+          });
+          coords = [];
+        }
+      });
+    </script>
+  </body>
+
+</html>

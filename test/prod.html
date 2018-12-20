@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="mapea" content="yes">
+  <title>PLUGIN TEST</title>
+
+  <!-- styles -->
+  <link href="http://mapea4-sigc.juntadeandalucia.es/assets/css/mapea.ol.min.css" rel="stylesheet" />
+  <style rel="stylesheet">
+    html,
+         body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+         }
+      </style>
+
+  <!-- CSS plugin here -->
+
+</head>
+
+<body>
+  <!-- container -->
+  <div id="mapjs" class="container"></div>
+
+  <!-- libraries -->
+  <script type="text/javascript" src="http://mapea4-sigc.juntadeandalucia.es/vendor/browser-polyfill.js"></script>
+  <script type="text/javascript" src="http://mapea4-sigc.juntadeandalucia.es/js/mapea.ol.min.js"></script>
+
+  <!-- configuration -->
+  <script type="text/javascript" src="http://mapea4-sigc.juntadeandalucia.es/js/configuration.js"></script>
+
+
+  <!-- Testeo de fuentes, comentar si es testeo de compilados -->
+  <script type="text/javascript" src="../libraries/closure/closure/goog/base.js"></script>
+
+  <!-- plugin dependencies here -->
+  <script type="text/javascript" src="../src/osrmclient/impl/ol3/js/osrmclientControl.js"></script>
+  <script type="text/javascript" src="../src/osrmclient/facade/js/osrmclientFunction.js"></script>
+  <script type="text/javascript" src="../src/osrmclient/facade/js/osrmclientControl.js"></script>
+  <script type="text/javascript" src="../src/osrmclient/facade/js/osrmclient.js"></script>
+
+
+  <script type="application/javascript">
+    var myMap = M.map({
+      container: 'mapjs',
+      controls:['mouse']
+    });
+    let point1 = [252705.6681, 4119326.6565];
+    let point2 = [235511.9196, 4138906.7020];
+    let points = [point1,point2];
+    // create here the plugin
+    var mp = new M.plugin.OSRMClient();
+
+    // add here the plugin into the map
+    myMap.addPlugin(mp);
+    let promise;
+    setTimeout(function(){this.promise = myMap.calculateRouteOsrm(points);},1000);
+  </script>
+
+</body>
+
+</html>
